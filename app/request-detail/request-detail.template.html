@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>{{ title }}</h1>
+            </div>
+        </div>
+
+        <div ui-view></div>
+
+    </div>
+
+    <div class="col-md-12">
+        <h3>{{request.type}} details</h3>
+
+        <ul>
+            <li>
+                <dl>
+                    <dt>Description</dt>
+                    <dd>{{request.description}}</dd>
+                </dl>
+            </li>
+            <li>
+                <dl>
+                    <dt>Status</dt>
+                    <dd>{{request.status}}</dd>
+                </dl>
+            </li>
+            <li>
+                <dl>
+                    <dt>Repairer</dt>
+                    <dd>{{request.repairer}}</dd>
+                </dl>
+            </li>
+            <li>
+                <dl>
+                    <dt>Images by</dt>
+                    <dd></dd>
+                </dl>
+            </li>
+            <li>
+                <dl>
+                    <dt>Submitted by</dt>
+                    <dd>{{userStatus}}</dd>
+                </dl>
+            </li>
+        </ul>
+
+        <a href="#{{request.username}}/requests/" class="thumb">
+            Retour
+        </a>
+    </div>
+</div>
