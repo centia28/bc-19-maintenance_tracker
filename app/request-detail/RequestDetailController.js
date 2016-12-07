@@ -32,20 +32,34 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
     var list = $firebaseArray(usersRef);
     $scope.displayRepairerAssign = "visibility: hidden";
     $scope.displayRequestDone = "visibility: hidden";
+    $scope.displayComments = "visibility: hidden";
     list.$loaded()
         .then(function(data) {
-            var user = data.$getRecord($routeParams.username);
-            if (user !== null) {   //The username exists
+            var repairerUser = data.$getRecord($scope.request.repairer);
+            var connectedUser = data.$getRecord($routeParams.username);
+            if (repairerUser !== null) {   //The username exists
                 //gest the repairer display name
-                $scope.repairerDisplayName = user.firstname + " " + user.lastname;
+                $scope.repairerDisplayName = repairerUser.firstname + " " + repairerUser.lastname;
+            }
+            if(connectedUser !== null){
 
-                if (user.role == "admin") {
+                if (connectedUser.role == "admin") {
                     $scope.displayRepairerAssign = "visibility: visible";
+                    if($scope.request.status == "resolved") {
+                        $scope.displayComments = "visibility: hidden";
+                    } else if($scope.request.status == "rejected" || $scope.request.status == "approved"){
+                        $scope.displayComments = "visibility: visible";
+                        $scope.displayRepairerAssign = "visibility: hidden";
+                    } else{
+                        $scope.displayComments = "visibility: hidden";
+                    }
                 }
                 if($scope.request.repairer == $routeParams.username) {
                     $scope.displayRequestDone = "visibility: visible";
                     if($scope.request.status == "resolved") {
                         $scope.doneBtnDisplay = "Undo";
+                    } else if($scope.request.status == "rejected" || $scope.request.status == "approved"){
+                        $scope.displayRequestDone = "visibility: hidden";
                     } else {
                         $scope.doneBtnDisplay = "Done";
                     }
@@ -53,11 +67,16 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
             }
 
             //populate select
-            $scope.repairers = {selected: null,availableOptions: []};
-            var opt = [];
-            var obj = {};
-            angular.forEach(data, function(user){
-                if ($scope.request.repairer !== "") {
+            populateRepairerSelect(data);
+        });
+    function populateRepairerSelect(data) {
+        $scope.repairers = {selected: null,availableOptions: []};
+        var opt = [];
+        var obj = {};
+        //console.log(data);
+        angular.forEach(data, function(user){
+            if(user.username !== null && user.username !== undefined){
+                if ($scope.request.repairer !== "" ) {
                     if (user.username !== $scope.request.repairer) {
                         obj.username = user.username;
                         obj.diplayName = user.firstname + " " + user.lastname;
@@ -68,10 +87,11 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
                     obj.diplayName = user.firstname + " " + user.lastname;
                     opt.push(obj);
                 }
-            });
-            //console.log(opt);
-            $scope.repairers.availableOptions = opt;
+            }
         });
+        //console.log(opt);
+        $scope.repairers.availableOptions = opt;
+    }
     
     //The assignment function
     $scope.assignRepairer = function () {
@@ -85,11 +105,26 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
             requestItem.status = "assigned";
             requestItem.$save().then(function(){
                 $scope.assignStatus = "Request assigned";
+
+                var repairerUser = list.$getRecord($scope.request.repairer);
+                if (repairerUser !== null) {   //The username exists
+                    //gest the repairer display name
+                    $scope.repairerDisplayName = repairerUser.firstname + " " + repairerUser.lastname;
+                }
+
+                populateRepairerSelect(list);
+
+                if(requestItem.repairer !== $routeParams.username){
+                    $scope.displayRequestDone = "visibility: hidden";
+                } else {
+                    $scope.displayRequestDone = "visibility: visible";
+                    $scope.doneBtnDisplay = "Done";
+                }
             }, function (error) {
                 $scope.assignStatus = error;
             })
         }
-    }
+    };
 
     //Update the request to resolved if done
     $scope.resolveRequest = function () {
@@ -97,15 +132,39 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
         if($scope.request.status == "resolved") {
             requestItem.status = "assigned";
             $scope.doneBtnDisplay = "Done";
+            $scope.displayComments = "visibility: hidden";
         } else {
             requestItem.status = "resolved";
             $scope.doneBtnDisplay = "Undo";
+            $scope.displayComments = "visibility: visible";
         }
         requestItem.$save().then(function(){
             $scope.assignStatus = "Request "+requestItem.status;
         }, function (error) {
             $scope.assignStatus = error;
         })
-    }
+    };
+    $scope.approveRequest = function () {
+        processApproval("approved")
+    };
+    $scope.rejectRequest = function () {
+        processApproval("rejected")
+    };
+    //If rejected, comment is required
+    //If decision made, can't assign or update to done
+    function processApproval(decision){
+        if(decision == "rejected" && $scope.request.comments == "" ){
+            $scope.assignStatus = "Add comments";
+        } else {
+            requestItem.status = decision;
+            requestItem.$save().then(function(){
+                $scope.assignStatus = "Request "+requestItem.status;
+            }, function (error) {
+                $scope.assignStatus = error;
+            });
 
+            $scope.displayRepairerAssign = "visibility: hidden";
+            $scope.displayRequestDone = "visibility: hidden";
+        }
+    }
 }

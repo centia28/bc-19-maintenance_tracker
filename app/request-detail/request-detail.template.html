@@ -54,9 +54,14 @@
                         {{repairer.diplayName}}
                     </option>
                 </select>
+
                 <button type="submit" class="btn btn-success" style="visibility: inherit" ng-click="assignRepairer()">Assign to repairer</button>
                 <button type="submit" class="btn btn-success" style="{{displayRequestDone}}" ng-click="resolveRequest()">{{doneBtnDisplay}}</button>
-                <span class="text-danger" style="visibility: inherit">{{ assignStatus }}</span>
+                <span class="text-danger" style="{{displayComments}}">{{ assignStatus }}</span>
+
+                <textarea name="comments" id="comments" class="form-control" style="{{displayComments}}" ng-model="request.comments" placeholder="Add comments"></textarea>
+                <button type="submit" class="btn btn-success" style="{{displayComments}}" ng-click="approveRequest()">Approve</button>
+                <button type="submit" class="btn btn-success" style="{{displayComments}}" ng-click="rejectRequest()">Reject</button>
             </div>
         </form>
 
