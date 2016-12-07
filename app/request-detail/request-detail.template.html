@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>{{ title }}</h1>
+            </div>
+        </div>
+
+        <div ui-view></div>
+
+    </div>
+
+    <div class="col-md-12">
+        <h3>{{request.type}} details</h3>
+
+        <ul>
+            <li>
+                <dl>
+                    <dt>Description</dt>
+                    <dd>{{request.description}}</dd>
+                </dl>
+            </li>
+            <li>
+                <dl>
+                    <dt>Status</dt>
+                    <dd>{{request.status}}</dd>
+                </dl>
+            </li>
+            <li>
+                <dl>
+                    <dt>Repairer</dt>
+                    <dd>{{repairerDisplayName}}</dd>
+                </dl>
+            </li>
+            <li>
+                <dl>
+                    <dt>Images by</dt>
+                    <dd></dd>
+                </dl>
+            </li>
+            <li>
+                <dl>
+                    <dt>Submitted by</dt>
+                    <dd>{{userStatus}}</dd>
+                </dl>
+            </li>
+        </ul>
+        <form class="form" style="{{displayRepairerAssign}}">
+            <div class="form-group" style="visibility: inherit">
+                <label for="selectRepairer" style="visibility: inherit"> Select repairer: </label>
+                <select style="visibility: inherit" name="selectRepairer" id="selectRepairer"  ng-model="repairers.selected">
+                    <option value="">---Please select a repairer---</option>
+                    <option style="visibility: inherit" ng-repeat="repairer in repairers.availableOptions" value="{{repairer.username}}">
+                        {{repairer.diplayName}}
+                    </option>
+                </select>
+
+                <button type="submit" class="btn btn-success" style="visibility: inherit" ng-click="assignRepairer()">Assign to repairer</button>
+                <button type="submit" class="btn btn-success" style="{{displayRequestDone}}" ng-click="resolveRequest()">{{doneBtnDisplay}}</button>
+                <span class="text-danger" style="{{displayComments}}">{{ assignStatus }}</span>
+
+                <textarea name="comments" id="comments" class="form-control" style="{{displayComments}}" ng-model="request.comments" placeholder="Add comments"></textarea>
+                <button type="submit" class="btn btn-success" style="{{displayComments}}" ng-click="approveRequest()">Approve</button>
+                <button type="submit" class="btn btn-success" style="{{displayComments}}" ng-click="rejectRequest()">Reject</button>
+            </div>
+        </form>
+
+        <a href="#{{request.username}}/requests/" class="thumb">
+            Back
+        </a>
+    </div>
+</div>
