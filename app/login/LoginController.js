@@ -7,15 +7,18 @@ angular
     .module('maintenancetrackerApp')
     .controller('LoginController', LoginController);
 
-LoginController.$inject = ['$scope','$location','$firebaseArray'];
-function LoginController ($scope,$location,$firebaseArray) {
-    //var ref = new Firebase("https://maintenancetracker-6bc70.firebaseio.com");
+LoginController.$inject = ['$scope','$location','$firebaseArray','UserFactory'];
+function LoginController ($scope,$location,$firebaseArray,UserFactory) {
     var usersRef = firebase.database().ref().child('users');
 
     $scope.title = "Maintenance tracker";
     $scope.LoginStatus = "";
 
     $scope.loginUser = function () {
+        //test factory
+        /*console.log(UserFactory);
+        var myUser = UserFactory.getUserByUsername($scope.username);*/
+
         $scope.dataLoading = true;
         if ($scope.username !== undefined && $scope.password !== undefined) {
             var list = $firebaseArray(usersRef);

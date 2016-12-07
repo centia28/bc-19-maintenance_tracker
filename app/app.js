@@ -4,7 +4,7 @@
 'use strict';
 
 var app = angular
-    .module('maintenancetrackerApp',['ngRoute','firebase','ngResource','ngFileUpload'])
+    .module('maintenancetrackerApp',['ngRoute','firebase','ngResource','ngFileUpload','core'])
     .config(config);
 config.$inject = ['$routeProvider'];
 function config ($routeProvider){
