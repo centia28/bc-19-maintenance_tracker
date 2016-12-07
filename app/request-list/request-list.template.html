@@ -1,0 +1,28 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>{{ title }}</h1>
+            </div>
+        </div>
+
+        <div ui-view></div>
+
+    </div>
+
+    <div class="col-md-12">
+        <h3>Requests made by {{username}}</h3>
+
+        <ul>
+            <li ng-repeat="request in requests">
+                <a href="#{{username}}/requests/{{request.id}}" class="thumb">
+                    "{{request.description.substring(0,10)}} ..."
+                </a>
+            </li>
+        </ul>
+
+        <a href="#{{username}}/requestadd/" class="thumb">
+            Add a request
+        </a>
+    </div>
+</div>
