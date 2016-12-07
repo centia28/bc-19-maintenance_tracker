@@ -29,7 +29,7 @@
             <li>
                 <dl>
                     <dt>Repairer</dt>
-                    <dd>{{request.repairer}}</dd>
+                    <dd>{{repairerDisplayName}}</dd>
                 </dl>
             </li>
             <li>
@@ -45,9 +45,23 @@
                 </dl>
             </li>
         </ul>
+        <form class="form" style="{{displayRepairerAssign}}">
+            <div class="form-group" style="visibility: inherit">
+                <label for="selectRepairer" style="visibility: inherit"> Select repairer: </label>
+                <select style="visibility: inherit" name="selectRepairer" id="selectRepairer"  ng-model="repairers.selected">
+                    <option value="">---Please select a repairer---</option>
+                    <option style="visibility: inherit" ng-repeat="repairer in repairers.availableOptions" value="{{repairer.username}}">
+                        {{repairer.diplayName}}
+                    </option>
+                </select>
+                <button type="submit" class="btn btn-success" style="visibility: inherit" ng-click="assignRepairer()">Assign to repairer</button>
+                <button type="submit" class="btn btn-success" style="{{displayRequestDone}}" ng-click="resolveRequest()">{{doneBtnDisplay}}</button>
+                <span class="text-danger" style="visibility: inherit">{{ assignStatus }}</span>
+            </div>
+        </form>
 
         <a href="#{{request.username}}/requests/" class="thumb">
-            Retour
+            Back
         </a>
     </div>
 </div>
