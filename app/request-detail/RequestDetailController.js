@@ -10,32 +10,36 @@ RequestDetailController.$inject = ['$scope','$firebaseObject','$firebaseArray','
 
 function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routeParams) {
     var requestRef = firebase.database().ref().child('requests').child($routeParams.requestId);
+    var usersRef = firebase.database().ref().child('users');
+    var list = $firebaseArray(usersRef);
 
     $scope.title = "Maintenance tracker";
+    $scope.userConnected = $routeParams.username
 
     var requestItem = $firebaseObject(requestRef);
     requestItem.$loaded()
         .then(function (data) {
             $scope.request = data;
-            if ($scope.request.username == $routeParams.username) {
+            if (data.username == $routeParams.username) {
                 $scope.userStatus = "Yourself";
             } else {
-                $scope.userStatus = $routeParams.username;
+                list.$loaded()
+                    .then(function(userdata) {
+                        var user = userdata.$getRecord(data.username);
+                        $scope.userStatus = user.firstname + " " + user.lastname;
+                    });
             }
         });
 
-    //repairerDisplayName
-
     //we show repairer assignment only for admin
     //we show done button to repairer assigned the request
-    var usersRef = firebase.database().ref().child('users');
-    var list = $firebaseArray(usersRef);
+
     $scope.displayRepairerAssign = "visibility: hidden";
     $scope.displayRequestDone = "visibility: hidden";
     $scope.displayComments = "visibility: hidden";
     list.$loaded()
         .then(function(data) {
-            var repairerUser = data.$getRecord($scope.request.repairer);
+            var repairerUser = data.$getRecord(requestItem.repairer);
             var connectedUser = data.$getRecord($routeParams.username);
             if (repairerUser !== null) {   //The username exists
                 //gest the repairer display name
@@ -46,15 +50,19 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
                 if (connectedUser.role == "admin") {
                     $scope.displayRepairerAssign = "visibility: visible";
                     if($scope.request.status == "resolved") {
-                        $scope.displayComments = "visibility: hidden";
+                        $scope.displayRepairerAssign = "visibility: hidden";
+                        $scope.displayComments = "visibility: visible";
                     } else if($scope.request.status == "rejected" || $scope.request.status == "approved"){
                         $scope.displayComments = "visibility: visible";
                         $scope.displayRepairerAssign = "visibility: hidden";
                     } else{
                         $scope.displayComments = "visibility: hidden";
                     }
+                    //populate select
+                    //console.log(data);
+                    populateRepairerSelect(data);
                 }
-                if($scope.request.repairer == $routeParams.username) {
+                if(requestItem.repairer == $routeParams.username) {
                     $scope.displayRequestDone = "visibility: visible";
                     if($scope.request.status == "resolved") {
                         $scope.doneBtnDisplay = "Undo";
@@ -66,31 +74,31 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
                 }
             }
 
-            //populate select
-            populateRepairerSelect(data);
+
         });
-    function populateRepairerSelect(data) {
+    function populateRepairerSelect(userList) {
         $scope.repairers = {selected: null,availableOptions: []};
         var opt = [];
-        var obj = {};
-        //console.log(data);
-        angular.forEach(data, function(user){
+        angular.forEach(userList, function(user){
             if(user.username !== null && user.username !== undefined){
-                if ($scope.request.repairer !== "" ) {
-                    if (user.username !== $scope.request.repairer) {
+                if (requestItem.repairer !== "" && requestItem.repairer !== null && requestItem.repairer !== undefined) {
+                    if (user.username !== requestItem.repairer) {
+                        var obj = {};
                         obj.username = user.username;
                         obj.diplayName = user.firstname + " " + user.lastname;
                         opt.push(obj);
                     }
                 } else {
+                    var obj = {};
                     obj.username = user.username;
                     obj.diplayName = user.firstname + " " + user.lastname;
                     opt.push(obj);
                 }
             }
         });
-        //console.log(opt);
+        //console.log($scope.repairers);
         $scope.repairers.availableOptions = opt;
+        //console.log(opt,$scope.repairers);
     }
     
     //The assignment function
@@ -129,14 +137,19 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
     //Update the request to resolved if done
     $scope.resolveRequest = function () {
         //Update the request and set status to resolved
+        var connectedUser = list.$getRecord($routeParams.username);
         if($scope.request.status == "resolved") {
             requestItem.status = "assigned";
             $scope.doneBtnDisplay = "Done";
-            $scope.displayComments = "visibility: hidden";
+            if (connectedUser.role == "admin") {
+                $scope.displayComments = "visibility: hidden";
+            }
         } else {
             requestItem.status = "resolved";
             $scope.doneBtnDisplay = "Undo";
-            $scope.displayComments = "visibility: visible";
+            if (connectedUser.role == "admin") {
+                $scope.displayComments = "visibility: visible";
+            }
         }
         requestItem.$save().then(function(){
             $scope.assignStatus = "Request "+requestItem.status;

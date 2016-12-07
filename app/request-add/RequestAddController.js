@@ -36,7 +36,7 @@ function RequestAddController ($scope,$location,$firebaseArray,$routeParams,Uplo
                     //$scope.status = data.$getRecord(id).status;
                     $scope.setImage(id);
                     //Redirect to list
-                    $location.path($scope.username+'/requests/');
+                    $location.path($routeParams.username+'/requests/');
                 }, function (error) {
                     $scope.status = error;
                     $scope.dataLoading = false;

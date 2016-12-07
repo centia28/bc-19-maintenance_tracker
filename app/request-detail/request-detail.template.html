@@ -57,7 +57,7 @@
 
                 <button type="submit" class="btn btn-success" style="visibility: inherit" ng-click="assignRepairer()">Assign to repairer</button>
                 <button type="submit" class="btn btn-success" style="{{displayRequestDone}}" ng-click="resolveRequest()">{{doneBtnDisplay}}</button>
-                <span class="text-danger" style="{{displayComments}}">{{ assignStatus }}</span>
+                <span class="text-danger" style="visibility: inherit">{{ assignStatus }}</span>
 
                 <textarea name="comments" id="comments" class="form-control" style="{{displayComments}}" ng-model="request.comments" placeholder="Add comments"></textarea>
                 <button type="submit" class="btn btn-success" style="{{displayComments}}" ng-click="approveRequest()">Approve</button>
@@ -65,7 +65,7 @@
             </div>
         </form>
 
-        <a href="#{{request.username}}/requests/" class="thumb">
+        <a href="#{{userConnected}}/requests/" class="thumb">
             Back
         </a>
     </div>
