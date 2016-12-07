@@ -29,6 +29,10 @@ function config ($routeProvider){
         controller: 'RequestListController',
         templateUrl: 'request-list/request-list.template.html'
     })
+    .when('/:username/requests/:requestId',{
+        controller: 'RequestDetailController',
+        templateUrl: 'request-detail/request-detail.template.html'
+    })
     .otherwise({
         redirectTo: '/login'
     });

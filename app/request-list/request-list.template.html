@@ -15,8 +15,8 @@
 
         <ul>
             <li ng-repeat="request in requests">
-                <a href="#{{username}}/requests/{{request.id}}" class="thumb">
-                    "{{request.description.substring(0,10)}} ..."
+                <a href="#{{username}}/requests/{{request.$id}}" class="thumb">
+                    "{{request.description.substring(0,25)}} ..."
                 </a>
             </li>
         </ul>
