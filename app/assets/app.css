@@ -132,3 +132,5 @@ md-content {
     top: -1em;
     right: -1em;
 }
+md-progress-circular {
+    margin-bottom: 20px; }

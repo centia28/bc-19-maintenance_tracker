@@ -23,10 +23,11 @@
     <script src="bower_components/angularfire/dist/angularfire.js"></script>
     <script src='bower_components/firebase-simple-login/firebase-simple-login.js'></script>
     <script src="app.js"></script>
+    <script src="main/MainController.js"></script>
     <script src="login/LoginController.js"></script>
     <script src="register/RegisterController.js"></script>
-    <script src="request-add/RequestAddController.js"></script>
     <script src="request-list/RequestListController.js"></script>
+    <script src="request-add/RequestAddController.js"></script>
     <script src="request-detail/RequestDetailController.js"></script>
     <script src="request-detail/RequestUpdateController.js"></script>
     <script src="user/UserListController.js"></script>
@@ -37,17 +38,21 @@
 
 </head>
 <body>
-    <md-toolbar class="md-hue-2">
+    <md-toolbar class="md-hue-2" style="{{toolVisible}}">
         <div class="md-toolbar-tools">
             <h3>                <span>Maintenance tracker</span>         </h3>
             <span flex></span>
+
+            <md-button class="md-fab md-primary md-hue-2" aria-label="Profile" onclick="javascript:window.open('#'+window.sessionStorage.getItem('user')+'/profile','_self')">
+                <md-icon md-svg-src="img/icons/ic_people_24px.svg"></md-icon>
+            </md-button>
 
             <md-menu md-position-mode="target-right target">
                 <md-button aria-label="Open demo menu"  ng-click="$mdOpenMenu($event)">
                     <md-icon md-menu-origin md-svg-icon="content:ic_add_24px"></md-icon>
                     Notifications
                 </md-button>
-                <md-menu-content width="4" >
+                <!--md-menu-content width="4" >
                     <md-menu-item ng-repeat="item in [1, 2, 3]">
                         <md-button ng-click="ctrl.announceClick($index)">
                             <div layout="row" flex>
@@ -55,7 +60,7 @@
                             </div>
                         </md-button>
                     </md-menu-item>
-                </md-menu-content>
+                </md-menu-content-->
             </md-menu>
 
             <!--md-button class="md-icon-button" aria-label="Notification">
@@ -63,11 +68,6 @@
             </md-button-->
         </div>
     </md-toolbar>
-    <!--md-toolbar class="md-whiteframe-z1">
-        <div class="md-toolbar-tools">
-            <h3> Maintenance tracker</h3>
-        </div>
-    </md-toolbar-->
     <div class="container">
         <div ng_view></div>
     </div>

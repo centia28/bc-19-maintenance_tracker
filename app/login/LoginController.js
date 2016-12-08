@@ -7,9 +7,21 @@ angular
     .module('maintenancetrackerApp')
     .controller('LoginController', LoginController);
 
-LoginController.$inject = ['$scope','$mdDialog','$location','$firebaseArray'];
-function LoginController ($scope,$mdDialog,$location,$firebaseArray) {
+LoginController.$inject = ['$scope','$window','$mdDialog','$location','$firebaseArray'];
+function LoginController ($scope,$window,$mdDialog,$location,$firebaseArray) {
     var usersRef = firebase.database().ref().child('users');
+    var list = $firebaseArray(usersRef);
+
+    if(window.sessionStorage.getItem("user") !== ""){
+        list.$loaded()
+            .then(function(data) {
+                if (data.$getRecord(window.sessionStorage.getItem("user")) !== null) {
+                    //The username exists
+                    $location.path(window.sessionStorage.getItem("user")+'/requests/');
+                }
+            });
+
+    }
     var LoginStatus;
 
     $scope.loginUser = function () {
@@ -20,10 +32,10 @@ function LoginController ($scope,$mdDialog,$location,$firebaseArray) {
                 .then(function(data) {
                     if (data.$getRecord($scope.username) !== null) {   //The username exists
                         if(data.$getRecord($scope.username).password == $scope.password){
-
+                            $window.sessionStorage.setItem("user", $scope.username);
                             $location.path($scope.username+'/requests/');
                         } else {
-                            LoginStatus = "Wrong password"
+                            LoginStatus = "Wrong password";
                             showAlert();
                         }
                     } else {
@@ -35,7 +47,7 @@ function LoginController ($scope,$mdDialog,$location,$firebaseArray) {
                     showAlert();
                 });
         }
-    }
+    };
 
     function showAlert(ev){
         // Appending dialog to document.body to cover sidenav in docs app

@@ -11,14 +11,14 @@ var app = angular
         'firebase',
         'ngResource',
         'ngFileUpload'])
-    .config(config)
+    .config(config);
 
 config.$inject = ['$routeProvider'];
 function config ($routeProvider){
     $routeProvider.
     when('/', {
-        controller: 'LoginController',
-        templateUrl: 'login/login.template.html'
+        controller: 'MainController',
+        templateUrl: 'main/main.html'
     })
     .when('/login',{
         controller: 'LoginController',
@@ -52,7 +52,7 @@ function config ($routeProvider){
         templateUrl: 'user/user-list.template.html'
     })
     .otherwise({
-        redirectTo: '/login'
+        redirectTo: '/'
     });
 }
 var fireConfig = {
@@ -63,6 +63,15 @@ var fireConfig = {
     messagingSenderId: "210109565348"
 };
 firebase.initializeApp(fireConfig);
+
+/*app.controller('appCtrl',['$scope','$routeParams','$location'],function ($scope,$routeParams,$location) {
+    $scope.seeProfile = function () {
+        $location.path($routeParams.username/profile);
+    }
+});*/
+function seeProfile(){
+    $location.path($routeParams.username/profile);
+}
 
 app.config(function($mdIconProvider) {
     $mdIconProvider
