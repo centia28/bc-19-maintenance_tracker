@@ -13,6 +13,7 @@
     "bootstrap": "3.3.x",
     "angularfire": "2.1.x",
     "ng-file-upload-shim": "12.x.x",
-    "ng-file-upload": "12.x.x"
+    "ng-file-upload": "12.x.x",
+    "angular-messages": "1.x.x"
   }
 }

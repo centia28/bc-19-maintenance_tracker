@@ -6,36 +6,40 @@
 angular
     .module('maintenancetrackerApp')
     .controller('RequestDetailController', RequestDetailController);
-RequestDetailController.$inject = ['$scope','$firebaseObject','$firebaseArray','$routeParams'];
+RequestDetailController.$inject = ['$scope','$mdDialog','$location','$firebaseObject','$firebaseArray','$routeParams'];
 
-function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routeParams) {
+function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$firebaseArray,$routeParams) {
     var requestRef = firebase.database().ref().child('requests').child($routeParams.requestId);
+    var usersRef = firebase.database().ref().child('users');
+    var list = $firebaseArray(usersRef);
 
-    $scope.title = "Maintenance tracker";
+    $scope.userConnected = $routeParams.username;
 
     var requestItem = $firebaseObject(requestRef);
     requestItem.$loaded()
         .then(function (data) {
             $scope.request = data;
-            if ($scope.request.username == $routeParams.username) {
+            if (data.username == $routeParams.username) {
                 $scope.userStatus = "Yourself";
             } else {
-                $scope.userStatus = $routeParams.username;
+                list.$loaded()
+                    .then(function(userdata) {
+                        var user = userdata.$getRecord(data.username);
+                        $scope.userStatus = user.firstname + " " + user.lastname;
+                    });
             }
         });
 
-    //repairerDisplayName
-
     //we show repairer assignment only for admin
     //we show done button to repairer assigned the request
-    var usersRef = firebase.database().ref().child('users');
-    var list = $firebaseArray(usersRef);
+
     $scope.displayRepairerAssign = "visibility: hidden";
     $scope.displayRequestDone = "visibility: hidden";
     $scope.displayComments = "visibility: hidden";
+    $scope.displayEdit = "visibility: hidden";
     list.$loaded()
         .then(function(data) {
-            var repairerUser = data.$getRecord($scope.request.repairer);
+            var repairerUser = data.$getRecord(requestItem.repairer);
             var connectedUser = data.$getRecord($routeParams.username);
             if (repairerUser !== null) {   //The username exists
                 //gest the repairer display name
@@ -45,20 +49,33 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
 
                 if (connectedUser.role == "admin") {
                     $scope.displayRepairerAssign = "visibility: visible";
-                    if($scope.request.status == "resolved") {
-                        $scope.displayComments = "visibility: hidden";
-                    } else if($scope.request.status == "rejected" || $scope.request.status == "approved"){
+                    //console.log($scope.request);
+                    if(requestItem.status == "resolved") {
+                        $scope.displayRepairerAssign = "visibility: hidden";
+                        $scope.displayComments = "visibility: visible";
+                    } else if(requestItem.status == "rejected" || requestItem.status == "approved"){
                         $scope.displayComments = "visibility: visible";
                         $scope.displayRepairerAssign = "visibility: hidden";
                     } else{
                         $scope.displayComments = "visibility: hidden";
                     }
+                    //populate select
+                    //console.log(data);
+                    populateRepairerSelect(data);
                 }
-                if($scope.request.repairer == $routeParams.username) {
+                //Only the user who added the request can edit it, and only pending request can be edited
+                if(connectedUser.username == requestItem.username) {
+                    if(requestItem.status == "pending") {
+                        $scope.displayEdit = "visibility: visible";
+                    }
+                } else {
+                    $scope.displayEdit = "visibility: hidden";
+                }
+                if(requestItem.repairer == $routeParams.username) {
                     $scope.displayRequestDone = "visibility: visible";
-                    if($scope.request.status == "resolved") {
+                    if(requestItem.status == "resolved") {
                         $scope.doneBtnDisplay = "Undo";
-                    } else if($scope.request.status == "rejected" || $scope.request.status == "approved"){
+                    } else if(requestItem.status == "rejected" || requestItem.status == "approved"){
                         $scope.displayRequestDone = "visibility: hidden";
                     } else {
                         $scope.doneBtnDisplay = "Done";
@@ -66,31 +83,33 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
                 }
             }
 
-            //populate select
-            populateRepairerSelect(data);
+
         });
-    function populateRepairerSelect(data) {
+    function populateRepairerSelect(userList) {
         $scope.repairers = {selected: null,availableOptions: []};
         var opt = [];
-        var obj = {};
-        //console.log(data);
-        angular.forEach(data, function(user){
+        angular.forEach(userList, function(user){
             if(user.username !== null && user.username !== undefined){
-                if ($scope.request.repairer !== "" ) {
-                    if (user.username !== $scope.request.repairer) {
+                var obj = {};
+                if (requestItem.repairer !== "" && requestItem.repairer !== null && requestItem.repairer !== undefined) {
+                    if (user.username !== requestItem.repairer && user.role == "repairer") {
+
                         obj.username = user.username;
                         obj.diplayName = user.firstname + " " + user.lastname;
                         opt.push(obj);
                     }
                 } else {
-                    obj.username = user.username;
-                    obj.diplayName = user.firstname + " " + user.lastname;
-                    opt.push(obj);
+                    if (user.role == "repairer") {
+                        obj.username = user.username;
+                        obj.diplayName = user.firstname + " " + user.lastname;
+                        opt.push(obj);
+                    }
                 }
             }
         });
-        //console.log(opt);
+        //console.log($scope.repairers);
         $scope.repairers.availableOptions = opt;
+        //console.log(opt,$scope.repairers);
     }
     
     //The assignment function
@@ -129,14 +148,19 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
     //Update the request to resolved if done
     $scope.resolveRequest = function () {
         //Update the request and set status to resolved
+        var connectedUser = list.$getRecord($routeParams.username);
         if($scope.request.status == "resolved") {
             requestItem.status = "assigned";
             $scope.doneBtnDisplay = "Done";
-            $scope.displayComments = "visibility: hidden";
+            if (connectedUser.role == "admin") {
+                $scope.displayComments = "visibility: hidden";
+            }
         } else {
             requestItem.status = "resolved";
             $scope.doneBtnDisplay = "Undo";
-            $scope.displayComments = "visibility: visible";
+            if (connectedUser.role == "admin") {
+                $scope.displayComments = "visibility: visible";
+            }
         }
         requestItem.$save().then(function(){
             $scope.assignStatus = "Request "+requestItem.status;
@@ -144,16 +168,37 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
             $scope.assignStatus = error;
         })
     };
+
     $scope.approveRequest = function () {
-        processApproval("approved")
+        processApproval("approved","")
     };
-    $scope.rejectRequest = function () {
-        processApproval("rejected")
+
+    $scope.showAdd = function(ev) {
+        $mdDialog.show({
+            controller: DialogController,
+            templateUrl: 'request-detail/addComment.template.html',
+            targetEvent: ev
+        })
+            .then(function(answer) {
+                processApproval("rejected",answer);
+            }, function() {
+                $scope.alert = 'You cancelled the dialog.';
+            });
     };
+
+    $scope.goToRequests = function () {
+        $location.path($scope.userConnected+'/requests');
+    };
+
+    $scope.goToUpdateRequest = function () {
+        $location.path($scope.userConnected+'/requests/'+$routeParams.requestId+"/edit");
+    };
+
     //If rejected, comment is required
     //If decision made, can't assign or update to done
-    function processApproval(decision){
-        if(decision == "rejected" && $scope.request.comments == "" ){
+    function processApproval(decision,comment){
+        //console.log(comment);
+        if(decision == "rejected" && comment == "" ){
             $scope.assignStatus = "Add comments";
         } else {
             requestItem.status = decision;
@@ -166,5 +211,53 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
             $scope.displayRepairerAssign = "visibility: hidden";
             $scope.displayRequestDone = "visibility: hidden";
         }
+
+        //Add web notification
+        var notificationRef = firebase.database().ref().child('notifications');
+        var list = $firebaseArray(notificationRef);
+        list.$loaded()
+            .then(function(data) {
+                var notificationData = [{
+                    requestId:$routeParams.requestId,
+                    requestStatus:decision,
+                    status:""
+                }];
+                if (data.$getRecord(requestItem.username) == null) {
+
+                    notificationRef.child(requestItem.username).set(notificationData).then(function (ref) {
+
+                    }, function (error) {
+
+                    });
+                } else{
+                    //There are notifications
+                    var notifsRef = firebase.database().ref().child('notifications').child(requestItem.username);
+                    var notifs = $firebaseArray(notifsRef);
+                    notifs.$loaded().then(function (listData) {
+                        listData.$add(notificationData).then(function (ref) {
+                            console.log("listAdded",ref.key);
+                        })
+                    },function (error) {
+                        console.log(error);
+                    });
+
+
+                }
+            })
+            .catch(function(error) {
+
+            });
+    }
+
+    function DialogController($scope, $mdDialog) {
+        $scope.hide = function() {
+            $mdDialog.hide();
+        };
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+        $scope.answer = function(answer) {
+            $mdDialog.hide(answer);
+        };
     }
 }
