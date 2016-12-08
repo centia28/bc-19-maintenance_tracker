@@ -5,32 +5,37 @@
 angular
     .module('maintenancetrackerApp')
     .controller('RequestListController', RequestListController);
-RequestListController.$inject = ['$scope','$location','$firebaseArray','$routeParams','$log'];
+RequestListController.$inject = ['$scope','$location','$firebaseObject','$firebaseArray','$routeParams','$log'];
 
-function RequestListController ($scope,$location,$firebaseArray,$routeParams,$log) {
-    var query;
+function RequestListController ($scope,$location,$firebaseObject,$firebaseArray,$routeParams,$log) {
+    var query,query2;
     $scope.username = $routeParams.username;
     //console.log($routeParams.scope);
 
     //Load the user and filter the request on the username
-    var usersRef = firebase.database().ref().child('users');
-    var list = $firebaseArray(usersRef);
-    list.$loaded()
-        .then(function(data) {
-            if (data.$getRecord($routeParams.username) !== null) {   //The username exists
-                if (data.$getRecord($routeParams.username).role !== "admin") {
-                    query = firebase.database().ref().child('requests').orderByChild("username").equalTo($routeParams.username);
-                        //console.log(data.val());
-                } else {
-                    query = firebase.database().ref().child('requests');
-                }
-            }
+    var usersRef = firebase.database().ref().child('users').child($routeParams.username);
+    var requestRef = firebase.database().ref().child('requests');
+    var user = $firebaseObject(usersRef);
+    var list = $firebaseArray(requestRef);
 
-            var requestList = $firebaseArray(query);
-            requestList.$loaded()
-                .then(function (data) {
-                    $scope.requests = data;
-                });
+    user.$loaded()
+        .then(function(data) {
+            //Load the requests
+            list.$loaded().then(function (reqData) {
+                if(data.role !== "admin"){
+                    var opt = [];
+                    angular.forEach(reqData,function (item) {
+                        if(item.username == $routeParams.username || item.repairer == $routeParams.username){
+                            //console.log(item);
+                            opt.push(item);
+                        }
+                    })
+                    $scope.requests = opt;
+                } else{
+                    //console.log(reqData);
+                    $scope.requests = reqData;
+                }
+            });
         });
 
 

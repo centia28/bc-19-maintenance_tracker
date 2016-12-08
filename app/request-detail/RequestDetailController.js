@@ -90,18 +90,20 @@ function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$fir
         var opt = [];
         angular.forEach(userList, function(user){
             if(user.username !== null && user.username !== undefined){
+                var obj = {};
                 if (requestItem.repairer !== "" && requestItem.repairer !== null && requestItem.repairer !== undefined) {
-                    if (user.username !== requestItem.repairer) {
-                        var obj = {};
+                    if (user.username !== requestItem.repairer && user.role == "repairer") {
+
                         obj.username = user.username;
                         obj.diplayName = user.firstname + " " + user.lastname;
                         opt.push(obj);
                     }
                 } else {
-                    var obj = {};
-                    obj.username = user.username;
-                    obj.diplayName = user.firstname + " " + user.lastname;
-                    opt.push(obj);
+                    if (user.role == "repairer") {
+                        obj.username = user.username;
+                        obj.diplayName = user.firstname + " " + user.lastname;
+                        opt.push(obj);
+                    }
                 }
             }
         });
@@ -175,7 +177,7 @@ function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$fir
         $mdDialog.show({
             controller: DialogController,
             templateUrl: 'request-detail/addComment.template.html',
-            targetEvent: ev,
+            targetEvent: ev
         })
             .then(function(answer) {
                 processApproval("rejected",answer);
@@ -195,7 +197,7 @@ function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$fir
     //If rejected, comment is required
     //If decision made, can't assign or update to done
     function processApproval(decision,comment){
-        console.log(comment);
+        //console.log(comment);
         if(decision == "rejected" && comment == "" ){
             $scope.assignStatus = "Add comments";
         } else {
@@ -209,7 +211,44 @@ function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$fir
             $scope.displayRepairerAssign = "visibility: hidden";
             $scope.displayRequestDone = "visibility: hidden";
         }
+
+        //Add web notification
+        var notificationRef = firebase.database().ref().child('notifications');
+        var list = $firebaseArray(notificationRef);
+        list.$loaded()
+            .then(function(data) {
+                var notificationData = [{
+                    requestId:$routeParams.requestId,
+                    requestStatus:decision,
+                    status:""
+                }];
+                if (data.$getRecord(requestItem.username) == null) {
+
+                    notificationRef.child(requestItem.username).set(notificationData).then(function (ref) {
+
+                    }, function (error) {
+
+                    });
+                } else{
+                    //There are notifications
+                    var notifsRef = firebase.database().ref().child('notifications').child(requestItem.username);
+                    var notifs = $firebaseArray(notifsRef);
+                    notifs.$loaded().then(function (listData) {
+                        listData.$add(notificationData).then(function (ref) {
+                            console.log("listAdded",ref.key);
+                        })
+                    },function (error) {
+                        console.log(error);
+                    });
+
+
+                }
+            })
+            .catch(function(error) {
+
+            });
     }
+
     function DialogController($scope, $mdDialog) {
         $scope.hide = function() {
             $mdDialog.hide();
@@ -220,5 +259,5 @@ function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$fir
         $scope.answer = function(answer) {
             $mdDialog.hide(answer);
         };
-    };
+    }
 }

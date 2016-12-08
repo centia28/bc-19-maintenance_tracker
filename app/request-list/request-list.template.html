@@ -13,7 +13,12 @@
                 <md-list flex>
                     <md-list-item class="md-2-line" ng-repeat="item in requests | filter:search" role="link" ng-click="goToRequest(item.$id)">
                         <div class="md-list-item-text">
-                            <div class="md-body-2">{{item.type}}</div>
+                            <div class="md-body-2">
+                                {{item.type}}
+                                <span style="color: #4a148c !important; align: right !important; text-decoration-style: solid !important">
+                                    {{item.repairer == username ? 'Assigned' : ''}}
+                                </span>
+                            </div>
                             <p class="md-body-2">{{item.description}}</p>
                         </div>
                         <md-divider></md-divider>

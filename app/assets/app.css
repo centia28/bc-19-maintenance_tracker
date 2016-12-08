@@ -126,3 +126,9 @@ Use of this source code is governed by an MIT-style license that can be in found
 md-content {
     min-height: 90% !important;
 }
+.card-media {
+    background-color: #999999; }
+.mdl-badge[data-badge]::after {
+    top: -1em;
+    right: -1em;
+}

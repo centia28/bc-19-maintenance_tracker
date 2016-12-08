@@ -1,0 +1,27 @@
+<div layout="row" layout-align="center center" >
+    <div class="md-whiteframe-z1" id="popupContainer">
+        <md-toolbar>
+            <h2 class="md-toolbar-tools">
+                <span>{{title}}</span>
+            </h2>
+        </md-toolbar>
+
+        <md-content class="md-padding" layout-xs="column" layout="row">
+            <md-card ng-repeat="user in users" style="width: 100%; position: relative">
+                <md-card-title>
+                    <md-card-title-text>
+                        <span class="md-headline">Name: {{user.firstname}} {{user.lastname}}</span>
+                        <span class="md-headline">Role: {{user.role}}</span>
+                        <span class="md-subhead">(@{{user.username}})</span>
+                        <span class="md-subhead">Email: {{user.email}}</span>
+                        <span class="md-subhead">Contact: {{user.contact}}</span>
+                    </md-card-title-text>
+                </md-card-title>
+                <md-card-actions layout="row" layout-align="end center">
+                    <md-button style="{{roleVisibility}}" class="md-raised md-primary" ng-click="setRole(user.username)">{{ user.role == "repairer" ? 'Is a staff member' : 'Is a repairer' }}</md-button>
+                    <md-button style="visibility: hidden" class="md-raised md-primary" ng-click="updateUser()">Update</md-button>
+                </md-card-actions>
+            </md-card>
+        </md-content>
+    </div>
+</div>
