@@ -1,72 +1,76 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="page-header">
-                <h1>{{ title }}</h1>
+<div layout="row" layout-align="center center" >
+    <div class="md-whiteframe-z1" layout="column" id="popupContainer">
+        <md-toolbar>
+            <h2 class="md-toolbar-tools">
+                <span>{{request.type}}</span>
+            </h2>
+        </md-toolbar>
+        <md-content layout="column" layout-padding class="relative" layout-fill role="main">
+            <div layout-gt-sm="row" layout-align="center center">
+                <md-card flex="50">
+                    <md-list class="request-container">
+                        <md-list-item class="md-3-line">
+                            <div class="md-list-item-text">
+                                <h2>Description</h2>
+                                <p>{{request.description}}</p>
+                                <md-slider ng-show="editApp" flex md-discrete step="1" min="1" max="50" ng-model="appScale" aria-label="Scale"></md-slider>
+                                <hr>
+                            </div>
+                        </md-list-item>
+                        <md-list-item class="md-3-line">
+                            <div class="md-list-item-text">
+                                <h2>Status</h2>
+                                <p>{{request.status}}</p>
+                                <md-slider ng-show="editApp" flex md-discrete step="1" min="1" max="50" ng-model="appScale" aria-label="Scale"></md-slider>
+                                <hr>
+                            </div>
+                        </md-list-item>
+                        <md-list-item class="md-3-line">
+                            <div class="md-list-item-text">
+                                <h2>Repairer</h2>
+                                <p>{{repairerDisplayName}}</p>
+                                <md-slider ng-show="editApp" flex md-discrete step="1" min="1" max="50" ng-model="appScale" aria-label="Scale"></md-slider>
+                                <hr>
+                            </div>
+                        </md-list-item>
+                        <md-list-item class="md-3-line">
+                            <div class="md-list-item-text">
+                                <h2>Submitted by</h2>
+                                <p>{{userStatus}}</p>
+                                <md-slider ng-show="editApp" flex md-discrete step="1" min="1" max="50" ng-model="appScale" aria-label="Scale"></md-slider>
+                                <hr>
+                            </div>
+                        </md-list-item>
+                        <md-divider></md-divider>
+                        <md-list-item>
+                            <span flex style="{{displayRepairerAssign}}">
+                                <md-input-container>
+                                    <span>Select repairer</span>
+                                    <md-select ng-model="repairers.selected">
+                                        <md-option ng-value="repairer.username" ng-repeat="repairer in repairers.availableOptions">{{repairer.diplayName}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                                <md-button class="md-primary" style="visibility: inherit" ng-click="assignRepairer()">
+                                    <span>Assign</span>
+                                </md-button>
+                            </span>
+                            <md-button class="md-primary" style="{{displayRequestDone}}" ng-click="resolveRequest()">
+                                <span>{{doneBtnDisplay}}</span>
+                            </md-button>
+                            <md-button class="md-primary" style="{{displayComments}}" ng-click="approveRequest()">
+                                <span>Approve</span>
+                            </md-button>
+                            <md-button class="md-warn" style="{{displayComments}}" ng-click="showAdd($event)">
+                                <span>Reject</span>
+                            </md-button>
+                            <span flex></span>
+                            <md-button ng-click="goToRequests()">
+                                <span>Cancel</span>
+                            </md-button>
+                        </md-list-item>
+                    </md-list>
+                </md-card>
             </div>
-        </div>
-
-        <div ui-view></div>
-
-    </div>
-
-    <div class="col-md-12">
-        <h3>{{request.type}} details</h3>
-
-        <ul>
-            <li>
-                <dl>
-                    <dt>Description</dt>
-                    <dd>{{request.description}}</dd>
-                </dl>
-            </li>
-            <li>
-                <dl>
-                    <dt>Status</dt>
-                    <dd>{{request.status}}</dd>
-                </dl>
-            </li>
-            <li>
-                <dl>
-                    <dt>Repairer</dt>
-                    <dd>{{repairerDisplayName}}</dd>
-                </dl>
-            </li>
-            <li>
-                <dl>
-                    <dt>Images by</dt>
-                    <dd></dd>
-                </dl>
-            </li>
-            <li>
-                <dl>
-                    <dt>Submitted by</dt>
-                    <dd>{{userStatus}}</dd>
-                </dl>
-            </li>
-        </ul>
-        <form class="form" style="{{displayRepairerAssign}}">
-            <div class="form-group" style="visibility: inherit">
-                <label for="selectRepairer" style="visibility: inherit"> Select repairer: </label>
-                <select style="visibility: inherit" name="selectRepairer" id="selectRepairer"  ng-model="repairers.selected">
-                    <option value="">---Please select a repairer---</option>
-                    <option style="visibility: inherit" ng-repeat="repairer in repairers.availableOptions" value="{{repairer.username}}">
-                        {{repairer.diplayName}}
-                    </option>
-                </select>
-
-                <button type="submit" class="btn btn-success" style="visibility: inherit" ng-click="assignRepairer()">Assign to repairer</button>
-                <button type="submit" class="btn btn-success" style="{{displayRequestDone}}" ng-click="resolveRequest()">{{doneBtnDisplay}}</button>
-                <span class="text-danger" style="visibility: inherit">{{ assignStatus }}</span>
-
-                <textarea name="comments" id="comments" class="form-control" style="{{displayComments}}" ng-model="request.comments" placeholder="Add comments"></textarea>
-                <button type="submit" class="btn btn-success" style="{{displayComments}}" ng-click="approveRequest()">Approve</button>
-                <button type="submit" class="btn btn-success" style="{{displayComments}}" ng-click="rejectRequest()">Reject</button>
-            </div>
-        </form>
-
-        <a href="#{{userConnected}}/requests/" class="thumb">
-            Back
-        </a>
+        </md-content>
     </div>
 </div>

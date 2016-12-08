@@ -1,28 +1,26 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="page-header">
-                <h1>{{ title }}</h1>
+<div layout="row" layout-align="center center" >
+    <div class="md-whiteframe-z1" id="popupContainer">
+        <md-toolbar>
+        <h2 class="md-toolbar-tools">
+            <span>Requests</span>
+        </h2>
+        <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd()">
+            <md-icon md-svg-icon="content:ic_add_24px" aria-label="Plus"></md-icon>
+        </md-button>
+        </md-toolbar>
+        <md-content layout="column" layout-padding class="relative" layout-fill role="main">
+            <div layout-gt-sm="row" layout-align="center center">
+                <md-list flex>
+                    <md-list-item class="md-2-line" ng-repeat="item in requests | filter:search" role="link" ng-click="goToRequest(item.$id)">
+                        <div class="md-list-item-text">
+                            <div class="md-body-2">{{item.type}}</div>
+                            <p class="md-body-2">{{item.description}}</p>
+                        </div>
+                        <md-divider></md-divider>
+                    </md-list-item>
+
+                </md-list>
             </div>
-        </div>
-
-        <div ui-view></div>
-
-    </div>
-
-    <div class="col-md-12">
-        <h3>Requests made by {{username}}</h3>
-
-        <ul>
-            <li ng-repeat="request in requests">
-                <a href="#{{username}}/requests/{{request.$id}}" class="thumb">
-                    "{{request.description.substring(0,25)}} ..."
-                </a>
-            </li>
-        </ul>
-
-        <a href="#{{username}}/requestadd" class="thumb">
-            Add a request
-        </a>
+        </md-content>
     </div>
 </div>

@@ -4,8 +4,15 @@
 'use strict';
 
 var app = angular
-    .module('maintenancetrackerApp',['ngRoute','firebase','ngResource','ngFileUpload','core'])
-    .config(config);
+    .module('maintenancetrackerApp',[
+        'ngMaterial',
+        'ngMessages',
+        'ngRoute',
+        'firebase',
+        'ngResource',
+        'ngFileUpload'])
+    .config(config)
+
 config.$inject = ['$routeProvider'];
 function config ($routeProvider){
     $routeProvider.
@@ -26,6 +33,8 @@ function config ($routeProvider){
         templateUrl: 'request-add/request-add.template.html'
     })
     .when('/:username/requests',{
+        //controller: 'AppCtrl',
+        //templateUrl: 'request/request.template.html'
         controller: 'RequestListController',
         templateUrl: 'request-list/request-list.template.html'
     })

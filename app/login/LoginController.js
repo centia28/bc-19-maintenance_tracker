@@ -7,18 +7,12 @@ angular
     .module('maintenancetrackerApp')
     .controller('LoginController', LoginController);
 
-LoginController.$inject = ['$scope','$location','$firebaseArray','UserFactory'];
-function LoginController ($scope,$location,$firebaseArray,UserFactory) {
+LoginController.$inject = ['$scope','$mdDialog','$location','$firebaseArray'];
+function LoginController ($scope,$mdDialog,$location,$firebaseArray) {
     var usersRef = firebase.database().ref().child('users');
-
-    $scope.title = "Maintenance tracker";
-    $scope.LoginStatus = "";
+    var LoginStatus;
 
     $scope.loginUser = function () {
-        //test factory
-        /*console.log(UserFactory);
-        var myUser = UserFactory.getUserByUsername($scope.username);*/
-
         $scope.dataLoading = true;
         if ($scope.username !== undefined && $scope.password !== undefined) {
             var list = $firebaseArray(usersRef);
@@ -26,21 +20,35 @@ function LoginController ($scope,$location,$firebaseArray,UserFactory) {
                 .then(function(data) {
                     if (data.$getRecord($scope.username) !== null) {   //The username exists
                         if(data.$getRecord($scope.username).password == $scope.password){
+
                             $location.path($scope.username+'/requests/');
                         } else {
-                            $scope.LoginStatus = "Wrong password";
-                            $scope.dataLoading = false;
+                            LoginStatus = "Wrong password"
+                            showAlert();
                         }
                     } else {
                         $location.path('/register');
                     }
                 })
                 .catch(function(error) {
-                    $scope.LoginStatus = error;
-                    $scope.dataLoading = false;
+                    LoginStatus = error;
+                    showAlert();
                 });
-        } else {
-            $scope.dataLoading = false;
         }
+    }
+
+    function showAlert(ev){
+        // Appending dialog to document.body to cover sidenav in docs app
+        // Modal dialogs should fully cover application
+        // to prevent interaction outside of dialog
+        $mdDialog.show(
+            $mdDialog.alert()
+            .parent(angular.element(document.querySelector('#popopContainer')))
+                .clickOutsideToClose(true)
+                .title('Error')
+                .textContent(LoginStatus)
+                .ok('OK')
+                .targetEvent(ev)
+        );
     }
 }

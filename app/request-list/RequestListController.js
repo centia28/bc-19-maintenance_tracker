@@ -2,16 +2,13 @@
  * Created by nina on 06/12/2016.
  */
 'use strict';
-
 angular
     .module('maintenancetrackerApp')
     .controller('RequestListController', RequestListController);
-RequestListController.$inject = ['$scope','$firebaseArray','$routeParams'];
+RequestListController.$inject = ['$scope','$location','$firebaseArray','$routeParams'];
 
-function RequestListController ($scope,$firebaseArray,$routeParams) {
-    //var requestsRef = firebase.database().ref().child('requests');
+function RequestListController ($scope,$location,$firebaseArray,$routeParams) {
     var query;
-    $scope.title = "Maintenance tracker";
     $scope.username = $routeParams.username;
 
     //Load the user and filter the request on the username
@@ -35,5 +32,12 @@ function RequestListController ($scope,$firebaseArray,$routeParams) {
                 });
         });
 
+    $scope.goToRequest = function(reqId){
+        $location.path($scope.username+'/requests/'+reqId);
+    };
+
+    $scope.showAdd = function(){
+        $location.path($scope.username+'/requestadd');
+    }
 
 }

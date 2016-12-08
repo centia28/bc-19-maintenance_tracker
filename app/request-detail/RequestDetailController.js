@@ -6,15 +6,14 @@
 angular
     .module('maintenancetrackerApp')
     .controller('RequestDetailController', RequestDetailController);
-RequestDetailController.$inject = ['$scope','$firebaseObject','$firebaseArray','$routeParams'];
+RequestDetailController.$inject = ['$scope','$location','$firebaseObject','$firebaseArray','$routeParams'];
 
-function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routeParams) {
+function RequestDetailController($scope,$location,$firebaseObject,$firebaseArray,$routeParams) {
     var requestRef = firebase.database().ref().child('requests').child($routeParams.requestId);
     var usersRef = firebase.database().ref().child('users');
     var list = $firebaseArray(usersRef);
 
-    $scope.title = "Maintenance tracker";
-    $scope.userConnected = $routeParams.username
+    $scope.userConnected = $routeParams.username;
 
     var requestItem = $firebaseObject(requestRef);
     requestItem.$loaded()
@@ -49,6 +48,7 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
 
                 if (connectedUser.role == "admin") {
                     $scope.displayRepairerAssign = "visibility: visible";
+                    //console.log($scope.request);
                     if($scope.request.status == "resolved") {
                         $scope.displayRepairerAssign = "visibility: hidden";
                         $scope.displayComments = "visibility: visible";
@@ -160,12 +160,29 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
     $scope.approveRequest = function () {
         processApproval("approved")
     };
+    $scope.showAdd = function(ev) {
+        $mdDialog.show({
+            controller: DialogController,
+            templateUrl: 'request-detail/addComments.html',
+            targetEvent: ev,
+        })
+            .then(function(answer) {
+                console.log(answer,$scope.request.comments);
+                //processApproval("rejected");
+            }, function() {
+                $scope.alert = 'You cancelled the dialog.';
+            });
+    };
     $scope.rejectRequest = function () {
         processApproval("rejected")
+    };
+    $scope.goToRequests = function () {
+        $location.path($scope.userConnected+'/requests');
     };
     //If rejected, comment is required
     //If decision made, can't assign or update to done
     function processApproval(decision){
+        console.log($scope.request.comments);
         if(decision == "rejected" && $scope.request.comments == "" ){
             $scope.assignStatus = "Add comments";
         } else {
@@ -180,4 +197,15 @@ function RequestDetailController($scope,$firebaseObject,$firebaseArray,$routePar
             $scope.displayRequestDone = "visibility: hidden";
         }
     }
+    function DialogController($scope, $mdDialog) {
+        $scope.hide = function() {
+            $mdDialog.hide();
+        };
+        $scope.cancel = function() {
+            $mdDialog.cancel();
+        };
+        $scope.answer = function(answer) {
+            $mdDialog.hide(answer);
+        };
+    };
 }
