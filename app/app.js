@@ -36,11 +36,16 @@ function config ($routeProvider){
         //controller: 'AppCtrl',
         //templateUrl: 'request/request.template.html'
         controller: 'RequestListController',
+        //templateUrl: 'request/request.template.html'
         templateUrl: 'request-list/request-list.template.html'
     })
     .when('/:username/requests/:requestId',{
         controller: 'RequestDetailController',
         templateUrl: 'request-detail/request-detail.template.html'
+    })
+    .when('/:username/requests/:requestId/edit',{
+        controller: 'RequestUpdateController',
+        templateUrl: 'request-detail/request-update.template.html'
     })
     .otherwise({
         redirectTo: '/login'

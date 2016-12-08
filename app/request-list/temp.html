@@ -11,62 +11,35 @@
     </div>
 
     <div class="col-md-12">
-        <h3>{{request.type}} details</h3>
+        <h3>Add a request</h3>
 
-        <ul>
-            <li>
-                <dl>
-                    <dt>Description</dt>
-                    <dd>{{request.description}}</dd>
-                </dl>
-            </li>
-            <li>
-                <dl>
-                    <dt>Status</dt>
-                    <dd>{{request.status}}</dd>
-                </dl>
-            </li>
-            <li>
-                <dl>
-                    <dt>Repairer</dt>
-                    <dd>{{repairerDisplayName}}</dd>
-                </dl>
-            </li>
-            <li>
-                <dl>
-                    <dt>Images by</dt>
-                    <dd></dd>
-                </dl>
-            </li>
-            <li>
-                <dl>
-                    <dt>Submitted by</dt>
-                    <dd>{{userStatus}}</dd>
-                </dl>
-            </li>
-        </ul>
-        <form class="form" style="{{displayRepairerAssign}}">
-            <div class="form-group" style="visibility: inherit">
-                <label for="selectRepairer" style="visibility: inherit"> Select repairer: </label>
-                <select style="visibility: inherit" name="selectRepairer" id="selectRepairer"  ng-model="repairers.selected">
-                    <option value="">---Please select a repairer---</option>
-                    <option style="visibility: inherit" ng-repeat="repairer in repairers.availableOptions" value="{{repairer.username}}">
-                        {{repairer.diplayName}}
-                    </option>
-                </select>
+        <form class="form">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="reqType">Type</label>
+                    <input type="text" name="reqType"  id="reqType" class="form-control" ng-model="request.reqType" placeholder="Request type" required=""/>
+                </div>
 
-                <button type="submit" class="btn btn-success" style="visibility: inherit" ng-click="assignRepairer()">Assign to repairer</button>
-                <button type="submit" class="btn btn-success" style="{{displayRequestDone}}" ng-click="resolveRequest()">{{doneBtnDisplay}}</button>
-                <span class="text-danger" style="visibility: inherit">{{ assignStatus }}</span>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea name="description" id="description" class="form-control" ng-model="request.description" placeholder="description" required=""></textarea>
+                </div>
 
-                <textarea name="comments" id="comments" class="form-control" style="{{displayComments}}" ng-model="request.comments" placeholder="Add comments"></textarea>
-                <button type="submit" class="btn btn-success" style="{{displayComments}}" ng-click="approveRequest()">Approve</button>
-                <button type="submit" class="btn btn-success" style="{{displayComments}}" ng-click="rejectRequest()">Reject</button>
+                <div class="form-group">
+                    <label >Upload a photo</label>
+                    <div class="btn btn-success" ngf-select="upload($file)" ng-model="file" name="file" ngf-pattern="'image/*'"
+                         ngf-accept="'image/*'" ngf-max-size="20MB" ngf-min-height="100"
+                         ngf-resize="{width: 100, height: 100}">Select</div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success" ng-click="addNewRequest()">Add the {{request.reqType}} request</button>
+                    <img ng-if="$scope.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                    <span class="text-danger">{{ status }}</span>
+                </div>
+
+
             </div>
         </form>
-
-        <a href="#{{userConnected}}/requests/" class="thumb">
-            Back
-        </a>
     </div>
 </div>

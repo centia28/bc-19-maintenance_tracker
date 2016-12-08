@@ -4,6 +4,38 @@
             <md-icon md-svg-icon="content:ic_add_24px" aria-label="Plus"></md-icon>
         </md-button>
 
+        <md-content class="md-padding">
+            <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links">
+                <md-nav-item md-nav-click="?'all'" name="all">All</md-nav-item>
+                <md-nav-item md-nav-click="?'pending'" name="pending">Pending</md-nav-item>
+                <!-- these require actual routing with ui-router or ng-route, so they won't work in the demo
+                <md-nav-item md-nav-sref="app.page4" name="page4">Page Four</md-nav-item>
+                <md-nav-item md-nav-href="#page5" name="page5">Page Five</md-nav-item>
+                -->
+            </md-nav-bar>
+            <div class="ext-content" ng-view flex>
+            </div>
+        </md-content>
+    </md-content>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--div layout="row">
+    <md-content layout="column" class="relative" layout-fill role="main">
+        <md-button class="md-fab md-fab-bottom-right" aria-label="Add" ng-click="showAdd($event)">
+            <md-icon md-svg-icon="content:ic_add_24px" aria-label="Plus"></md-icon>
+        </md-button>
+
         <md-content flex layout="row">
             <md-sidenav layout="column" layout-fill class="md-sidenav-left md-sidenav-list" md-component-id="nav" md-is-locked-open="$mdMedia('gt-sm')">
 
@@ -98,7 +130,7 @@
                                         <md-slider ng-show="editApp" flex md-discrete step="1" min="1" max="50" ng-model="appScale" aria-label="Scale"></md-slider>
                                         <p>Scale</p>
                                     </div>
-                                </md-list-item-->
+                                </md-list-item>
                                 <md-list-item class="md-3-line">
                                     <md-icon class="md-accent" hide-sm md-svg-icon="editor:ic_linear_scale_24px"></md-icon>
                                     <div class="md-list-item-text">
@@ -128,7 +160,7 @@
                                     <div class="md-list-item-text">
                                         <p>{{description}}</p>
                                         <md-slider ng-show="editApp" flex md-discrete step="1" min="1" max="50" ng-model="appScale" aria-label="Scale"></md-slider>
-                                        <p>Submitted by</p>
+                                        <p>Repairer</p>
                                     </div>
                                 </md-list-item>
                                 <md-divider></md-divider>
@@ -162,4 +194,4 @@
             </md-content>
         </md-content>
     </md-content>
-</div>
+</div-->

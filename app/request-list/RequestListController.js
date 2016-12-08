@@ -5,11 +5,12 @@
 angular
     .module('maintenancetrackerApp')
     .controller('RequestListController', RequestListController);
-RequestListController.$inject = ['$scope','$location','$firebaseArray','$routeParams'];
+RequestListController.$inject = ['$scope','$location','$firebaseArray','$routeParams','$log'];
 
-function RequestListController ($scope,$location,$firebaseArray,$routeParams) {
+function RequestListController ($scope,$location,$firebaseArray,$routeParams,$log) {
     var query;
     $scope.username = $routeParams.username;
+    //console.log($routeParams.scope);
 
     //Load the user and filter the request on the username
     var usersRef = firebase.database().ref().child('users');
@@ -31,6 +32,8 @@ function RequestListController ($scope,$location,$firebaseArray,$routeParams) {
                     $scope.requests = data;
                 });
         });
+
+
 
     $scope.goToRequest = function(reqId){
         $location.path($scope.username+'/requests/'+reqId);

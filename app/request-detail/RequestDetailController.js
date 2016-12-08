@@ -6,9 +6,9 @@
 angular
     .module('maintenancetrackerApp')
     .controller('RequestDetailController', RequestDetailController);
-RequestDetailController.$inject = ['$scope','$location','$firebaseObject','$firebaseArray','$routeParams'];
+RequestDetailController.$inject = ['$scope','$mdDialog','$location','$firebaseObject','$firebaseArray','$routeParams'];
 
-function RequestDetailController($scope,$location,$firebaseObject,$firebaseArray,$routeParams) {
+function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$firebaseArray,$routeParams) {
     var requestRef = firebase.database().ref().child('requests').child($routeParams.requestId);
     var usersRef = firebase.database().ref().child('users');
     var list = $firebaseArray(usersRef);
@@ -36,6 +36,7 @@ function RequestDetailController($scope,$location,$firebaseObject,$firebaseArray
     $scope.displayRepairerAssign = "visibility: hidden";
     $scope.displayRequestDone = "visibility: hidden";
     $scope.displayComments = "visibility: hidden";
+    $scope.displayEdit = "visibility: hidden";
     list.$loaded()
         .then(function(data) {
             var repairerUser = data.$getRecord(requestItem.repairer);
@@ -49,10 +50,10 @@ function RequestDetailController($scope,$location,$firebaseObject,$firebaseArray
                 if (connectedUser.role == "admin") {
                     $scope.displayRepairerAssign = "visibility: visible";
                     //console.log($scope.request);
-                    if($scope.request.status == "resolved") {
+                    if(requestItem.status == "resolved") {
                         $scope.displayRepairerAssign = "visibility: hidden";
                         $scope.displayComments = "visibility: visible";
-                    } else if($scope.request.status == "rejected" || $scope.request.status == "approved"){
+                    } else if(requestItem.status == "rejected" || requestItem.status == "approved"){
                         $scope.displayComments = "visibility: visible";
                         $scope.displayRepairerAssign = "visibility: hidden";
                     } else{
@@ -62,11 +63,19 @@ function RequestDetailController($scope,$location,$firebaseObject,$firebaseArray
                     //console.log(data);
                     populateRepairerSelect(data);
                 }
+                //Only the user who added the request can edit it, and only pending request can be edited
+                if(connectedUser.username == requestItem.username) {
+                    if(requestItem.status == "pending") {
+                        $scope.displayEdit = "visibility: visible";
+                    }
+                } else {
+                    $scope.displayEdit = "visibility: hidden";
+                }
                 if(requestItem.repairer == $routeParams.username) {
                     $scope.displayRequestDone = "visibility: visible";
-                    if($scope.request.status == "resolved") {
+                    if(requestItem.status == "resolved") {
                         $scope.doneBtnDisplay = "Undo";
-                    } else if($scope.request.status == "rejected" || $scope.request.status == "approved"){
+                    } else if(requestItem.status == "rejected" || requestItem.status == "approved"){
                         $scope.displayRequestDone = "visibility: hidden";
                     } else {
                         $scope.doneBtnDisplay = "Done";
@@ -157,33 +166,37 @@ function RequestDetailController($scope,$location,$firebaseObject,$firebaseArray
             $scope.assignStatus = error;
         })
     };
+
     $scope.approveRequest = function () {
-        processApproval("approved")
+        processApproval("approved","")
     };
+
     $scope.showAdd = function(ev) {
         $mdDialog.show({
             controller: DialogController,
-            templateUrl: 'request-detail/addComments.html',
+            templateUrl: 'request-detail/addComment.template.html',
             targetEvent: ev,
         })
             .then(function(answer) {
-                console.log(answer,$scope.request.comments);
-                //processApproval("rejected");
+                processApproval("rejected",answer);
             }, function() {
                 $scope.alert = 'You cancelled the dialog.';
             });
     };
-    $scope.rejectRequest = function () {
-        processApproval("rejected")
-    };
+
     $scope.goToRequests = function () {
         $location.path($scope.userConnected+'/requests');
     };
+
+    $scope.goToUpdateRequest = function () {
+        $location.path($scope.userConnected+'/requests/'+$routeParams.requestId+"/edit");
+    };
+
     //If rejected, comment is required
     //If decision made, can't assign or update to done
-    function processApproval(decision){
-        console.log($scope.request.comments);
-        if(decision == "rejected" && $scope.request.comments == "" ){
+    function processApproval(decision,comment){
+        console.log(comment);
+        if(decision == "rejected" && comment == "" ){
             $scope.assignStatus = "Add comments";
         } else {
             requestItem.status = decision;

@@ -13,16 +13,20 @@ var requestsRef = firebase.database().ref().child('requests');
 
 function RequestAddController ($scope,$location,$firebaseArray,$routeParams,Upload) {
     $scope.title = "Maintenance tracker";
+    $scope.requestTypes = {selected:null, availableOptions:[
+        { reqType: "Repair"},
+        { reqType: "Maintenance"}
+    ]};
     
     //the add request function
     $scope.addNewRequest = function () {
-        $scope.dataLoading = true;
-
+        //$scope.dataLoading = true;
+        //console.log($scope.requestTypes.selected,$scope.requestTypes);
         var requestList = $firebaseArray(requestsRef);
         requestList.$loaded()
             .then(function (data) {
                 var reqData = {
-                    type: $scope.request.reqType,
+                    type: $scope.requestTypes.selected,
                     description: $scope.request.description,
                     status: "pending",
                     comments: "",
@@ -46,6 +50,10 @@ function RequestAddController ($scope,$location,$firebaseArray,$routeParams,Uplo
                 $scope.status = error;
                 $scope.dataLoading = false;
             });
+    };
+
+    $scope.goToRequests = function () {
+        $location.path($routeParams.username+'/requests');
     };
     
     //upload a photo
