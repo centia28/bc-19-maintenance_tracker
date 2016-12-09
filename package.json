@@ -7,12 +7,11 @@
   "devDependencies": {
     "bower": "^1.7.7",
     "http-server": "^0.9.0",
-    "jasmine-core": "^2.4.1"
+    "jasmine-core": "^2.5.2"
   },
   "scripts": {
-    "preinstall": "npm install",
+    "preinstall": "npm install bower http-server jasmine-core",
     "postinstall": "bower install",
-
     "start": "http-server ./app -a localhost -p 8000 -c-1"
   }
 }

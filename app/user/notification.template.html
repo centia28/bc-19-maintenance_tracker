@@ -8,7 +8,7 @@
         <md-content layout="column" layout-padding class="relative" layout-fill role="main">
             <div layout-gt-sm="row" layout-align="center center">
                 <md-list flex>
-                    <md-list-item class="md-2-line" ng-repeat="item in notifications">
+                    <md-list-item class="md-2-line" ng-repeat="item in notifications track by item.requestId">
                         <div class="md-list-item-text" style ="{{item.statusColor}}" ng-click="updateStatus(item.requestId)">
                             <div class="md-body-2">
                                 {{item.reqType}}

@@ -14,23 +14,21 @@ function NotificationController($scope,$firebaseObject,$firebaseArray,$routePara
     list.$loaded().then(function (notifList) {
         var notif = {};
         angular.forEach(notifList,function (myNotif) {
-            var reqRef = firebase.database().ref().child('requests').child(myNotif.requestId);
-            var request = $firebaseObject(reqRef);
-            request.$loaded().then(function (data) {
-                notif.reqType = data.type;
-                notif.decision=myNotif.requestStatus;
-                notif.description = data.description;
-                notif.requestId = myNotif.requestId;
-                if(myNotif.status == ""){
-                    notif.statusColor = "background-color: #00acc1";        //for unread notification the background color is green
-                }
-            });
+            //console.log(myNotif);
 
+            notif.reqType = myNotif.reqType;
+            notif.decision=myNotif.requestStatus;
+            notif.description = myNotif.description;
+            notif.requestId = myNotif.requestId;
+            if(myNotif.status == ""){
+                notif.statusColor = "background-color: #00acc1";        //for unread notification the background color is green
+            }
             notifs.push(notif);
-        })
-    });
+            //console.log(notifs)
+            $scope.notifications = notifs;
+        });
 
-    $scope.notifications = notifs;
+    });
     
     $scope.updateStatus = function (reqId) {
         list.$loaded().then(function (notifList) {
@@ -44,6 +42,12 @@ function NotificationController($scope,$firebaseObject,$firebaseArray,$routePara
                        //console.log(updateObj);
                        data.$save().then(function () {
                         //I should update the color of the nofitication
+                           notifs = $scope.notifications;
+                           for (var i=0;i<notifs.length;i++){
+                               if(notifs[i].requestId = reqId){
+                                   notifs[i].statusColor = "background-color: inherit";
+                               }
+                           }
                         }, function (error) {
 
                         });

@@ -11,37 +11,32 @@
             <form name="registerForm">
                 <md-input-container class="md-block">
                     <label>Firstname</label>
-                    <input minlength="8" type="text" name="firstname" ng-model="user.firstname" required/>
+                    <input type="text" name="firstname" ng-model="user.firstname" required/>
                     <div ng-messages="registerForm.firstname.$error" multiple>
                         <div ng-message="required">This is required.</div>
-                        <div ng-message="minlength">The firstname have to be at least a 8 characters</div>
                         <div ng-message="maxlength">The firstname must not exceed a 25 characters</div>
                     </div>
                 </md-input-container>
                 <md-input-container class="md-block">
                     <label>Lastname</label>
-                    <input minlength="8" maxlength="25" type="text" name="lastname" ng-model="user.lastname" required/>
+                    <input maxlength="25" type="text" name="lastname" ng-model="user.lastname" required/>
                     <div ng-messages="registerForm.lastname.$error" multiple>
                         <div ng-message="required">This is required.</div>
-                        <div ng-message="minlength">The lastname have to be at least a 8 characters</div>
                         <div ng-message="maxlength">The lastname must not exceed a 25 characters</div>
                     </div>
                 </md-input-container>
                 <md-input-container class="md-block">
                     <label>Username</label>
-                    <input minlength="8" maxlength="25" type="text" name="username" ng-model="user.username" required/>
+                    <input type="text" name="username" ng-model="user.username" required/>
                     <div ng-messages="registerForm.username.$error" multiple>
                         <div ng-message="required">This is required.</div>
-                        <div ng-message="minlength">The username have to be at least a 8 characters</div>
-                        <div ng-message="maxlength">The username have to be at least a 8 characters</div>
                     </div>
                 </md-input-container>
                 <md-input-container class="md-block">
                     <label>Password</label>
-                    <input minlength="8" type="password" name="password" ng-model="user.password" required/>
+                    <input type="password" name="password" ng-model="user.password" required/>
                     <div ng-messages="registerForm.password.$error" multiple>
                         <div ng-message="required">This is required.</div>
-                        <div ng-message="minlength">The password have to be at least a 8 characters</div>
                     </div>
                 </md-input-container>
                 <div layout="row" layout-align="center center" style="padding-top:20px;">

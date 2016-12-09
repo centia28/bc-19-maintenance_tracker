@@ -24,7 +24,8 @@ function UserListController ($scope,$firebaseArray,$firebaseObject,$routeParams)
                 } else {
                     $scope.title = "Profile";
                     $scope.roleVisibility = "visibility:hidden";
-                    $scope.users = data.$getRecord($routeParams.username);
+                    //console.log(data.$getRecord($routeParams.username));
+                    $scope.users = [data.$getRecord($routeParams.username)];
                 }
             }
         });
@@ -46,7 +47,7 @@ function UserListController ($scope,$firebaseArray,$firebaseObject,$routeParams)
                         myrole = "repairer";
                     }
                 }
-                //console.log(userItem);
+                objItem.role=myrole;
                 objItem.$save().then(function () {
                     console.log("Updated");
                 }, function(error){

@@ -220,7 +220,9 @@ function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$fir
             .then(function(data) {
                 var myNotif = {
                     requestId:$routeParams.requestId,
-                    requestStatus:decision,
+                    reqType: requestItem.type,
+                    description:requestItem.description ,
+                    requestStatus:decision+ " " + requestItem.comments,
                     status:""
                 };
                 var notificationData = [];
