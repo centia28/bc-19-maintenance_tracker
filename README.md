@@ -1,7 +1,7 @@
 ## **Introduction**
 
 `Maintenance Tracker` is a `AngularJS` and `NodeJS` App. It's linked to a `Firebase` database.
-* It has the following features;
+It has the following features;
 * Login with username ans password
 * Allows adding requests(maintenance or repair)
 * Allows users to edit requests and see the status;
