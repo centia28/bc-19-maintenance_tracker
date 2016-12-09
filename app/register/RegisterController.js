@@ -15,6 +15,7 @@ function RegisterController ($scope,$location,$firebaseObject,$firebaseArray) {
 
     $scope.title = "Maintenance tracker";
     $scope.LoginStatus = "";
+    $scope.toolItemVisible = "visibility:hidden";
 
     $scope.register = function () {
         $scope.dataLoading = true;

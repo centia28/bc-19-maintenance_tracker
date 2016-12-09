@@ -201,6 +201,7 @@ function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$fir
         if(decision == "rejected" && comment == "" ){
             $scope.assignStatus = "Add comments";
         } else {
+            requestItem.comments = comment;
             requestItem.status = decision;
             requestItem.$save().then(function(){
                 $scope.assignStatus = "Request "+requestItem.status;
@@ -217,13 +218,14 @@ function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$fir
         var list = $firebaseArray(notificationRef);
         list.$loaded()
             .then(function(data) {
-                var notificationData = [{
+                var myNotif = {
                     requestId:$routeParams.requestId,
                     requestStatus:decision,
                     status:""
-                }];
+                };
+                var notificationData = [];
                 if (data.$getRecord(requestItem.username) == null) {
-
+                    notificationData.push(myNotif);
                     notificationRef.child(requestItem.username).set(notificationData).then(function (ref) {
 
                     }, function (error) {
@@ -231,11 +233,12 @@ function RequestDetailController($scope,$mdDialog,$location,$firebaseObject,$fir
                     });
                 } else{
                     //There are notifications
+                    //console.log("there are notifications");
                     var notifsRef = firebase.database().ref().child('notifications').child(requestItem.username);
                     var notifs = $firebaseArray(notifsRef);
                     notifs.$loaded().then(function (listData) {
-                        listData.$add(notificationData).then(function (ref) {
-                            console.log("listAdded",ref.key);
+                        listData.$add(myNotif).then(function (ref) {
+                            //console.log("listAdded",ref.key);
                         })
                     },function (error) {
                         console.log(error);

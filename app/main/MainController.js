@@ -6,12 +6,18 @@ angular
     .module('maintenancetrackerApp')
     .controller('MainController', MainController);
 
-MainController.$inject = ['$scope','$window','$location','$firebaseArray'];
-function MainController ($scope,$window,$location,$firebaseArray) {
+MainController.$inject = ['$scope','$window','$routeParams','$location','$firebaseArray'];
+function MainController ($scope,$window,$routeParams,$location,$firebaseArray) {
     var usersRef = firebase.database().ref().child('users');
     var list = $firebaseArray(usersRef);
 
     $scope.toolVisible = "visibility:hidden";
+
+    if($routeParams.logout == "true"){
+        $window.sessionStorage.setItem("user","");
+        console.log($window.sessionStorage.getItem("user"));
+        $location.path('/login');
+    }
 
     if($window.sessionStorage.getItem("user") !== ""){
         list.$loaded()
@@ -23,5 +29,7 @@ function MainController ($scope,$window,$location,$firebaseArray) {
                     $location.path('/login');
                 }
             });
+    }else{
+        $location.path('/login');
     }
 }
