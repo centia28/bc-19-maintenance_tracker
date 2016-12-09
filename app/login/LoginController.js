@@ -15,14 +15,15 @@ function LoginController ($scope,$window,$mdDialog,$location,$firebaseArray) {
     if(window.sessionStorage.getItem("user") !== ""){
         list.$loaded()
             .then(function(data) {
-                if (data.$getRecord(window.sessionStorage.getItem("user")) !== null) {
+                if (data.$getRecord($window.sessionStorage.getItem("user")) !== "") {
                     //The username exists
-                    $location.path(window.sessionStorage.getItem("user")+'/requests/');
+                    $location.path($window.sessionStorage.getItem("user")+'/requests/');
                 }
             });
 
     }
     var LoginStatus;
+    $scope.toolItemVisible = "visibility: hidden !important";
 
     $scope.loginUser = function () {
         $scope.dataLoading = true;

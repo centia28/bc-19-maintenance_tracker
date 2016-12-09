@@ -20,6 +20,10 @@ function config ($routeProvider){
         controller: 'MainController',
         templateUrl: 'main/main.html'
     })
+    .when('/logout/:logout', {
+        controller: 'MainController',
+        templateUrl: 'main/main.html'
+    })
     .when('/login',{
         controller: 'LoginController',
         templateUrl: 'login/login.template.html'
@@ -50,6 +54,10 @@ function config ($routeProvider){
     .when('/:username/profile',{
         controller: 'UserListController',
         templateUrl: 'user/user-list.template.html'
+    })
+    .when('/:username/notification',{
+        controller: 'NotificationController',
+        templateUrl: 'user/notification.template.html'
     })
     .otherwise({
         redirectTo: '/'

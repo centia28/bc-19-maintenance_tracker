@@ -31,6 +31,7 @@
     <script src="request-detail/RequestDetailController.js"></script>
     <script src="request-detail/RequestUpdateController.js"></script>
     <script src="user/UserListController.js"></script>
+    <script src="user/NotificationController.js"></script>
 
     <!--script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
     <!--script src="bower_components/materialize/bin/materialize.js"></script-->
@@ -38,30 +39,28 @@
 
 </head>
 <body>
-    <md-toolbar class="md-hue-2" style="{{toolVisible}}">
+    <md-toolbar class="md-hue-2">
         <div class="md-toolbar-tools">
+            <md-button class="md-fab md-primary md-hue-2" aria-label="Profile" style="{{toolItemVisible}}" onclick="javascript:window.open('#','_self')">
+                <md-icon md-svg-src="assets/img/home.svg"></md-icon>
+            </md-button>
+
             <h3>                <span>Maintenance tracker</span>         </h3>
             <span flex></span>
 
-            <md-button class="md-fab md-primary md-hue-2" aria-label="Profile" onclick="javascript:window.open('#'+window.sessionStorage.getItem('user')+'/profile','_self')">
-                <md-icon md-svg-src="img/icons/ic_people_24px.svg"></md-icon>
+            <md-button  aria-label="Profile" style="{{toolItemVisible}}" onclick="javascript:window.open('#logout/true','_self')">
+                <md-icon md-svg-src="assets/img/logout.svg"></md-icon>
+                Logout
             </md-button>
 
-            <md-menu md-position-mode="target-right target">
-                <md-button aria-label="Open demo menu"  ng-click="$mdOpenMenu($event)">
-                    <md-icon md-menu-origin md-svg-icon="content:ic_add_24px"></md-icon>
-                    Notifications
-                </md-button>
-                <!--md-menu-content width="4" >
-                    <md-menu-item ng-repeat="item in [1, 2, 3]">
-                        <md-button ng-click="ctrl.announceClick($index)">
-                            <div layout="row" flex>
-                                <p flex>Option {{item}}</p>
-                            </div>
-                        </md-button>
-                    </md-menu-item>
-                </md-menu-content-->
-            </md-menu>
+            <md-button class="md-fab md-primary md-hue-2" aria-label="Profile" style="{{toolItemVisible}}" onclick="javascript:window.open('#'+window.sessionStorage.getItem('user')+'/profile','_self')">
+                <md-icon md-svg-src="assets/img/account.svg"></md-icon>
+            </md-button>
+
+            <md-button  onclick="javascript:window.open('#'+window.sessionStorage.getItem('user')+'/notification','_self')" style="{{toolItemVisible}}">
+                <md-icon md-svg-src="assets/img/notification.svg"></md-icon>
+                Notifications
+            </md-button>
 
             <!--md-button class="md-icon-button" aria-label="Notification">
                 <md-icon md-svg-icon="img/icons/favorite.svg" style="color: greenyellow;"></md-icon>
