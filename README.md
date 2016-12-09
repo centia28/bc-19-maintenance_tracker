@@ -11,7 +11,7 @@
 * Allows adminitrator to add repairers
 * Allows administrator to manage requests: accept or reject it
 
-Click here ~~www.google.com~~to access the app on Github Pages
+Click here ~~http://centia28.github.io/bc-19-maintenance_tracker/~~to access the app on Github Pages
 
 ## Dependencies
 
