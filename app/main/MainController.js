@@ -19,7 +19,7 @@ function MainController ($scope,$window,$routeParams,$location,$firebaseArray) {
         $location.path('/login');
     }
 
-    if($window.sessionStorage.getItem("user") !== ""){
+    if($window.sessionStorage.getItem("user") !== "" && $window.sessionStorage.getItem("user") !== null && $window.sessionStorage.getItem("user") !== undefined){
         list.$loaded()
             .then(function(data) {
                 if (data.$getRecord($window.sessionStorage.getItem("user")) !== null) {
