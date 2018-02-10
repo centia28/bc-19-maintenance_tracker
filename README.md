@@ -35,7 +35,7 @@ This app's functionality depends on multiple `NodeJS` packages  and `Firebase` d
 
     * Using SSH;
     
-            git clone git@github.com:andela-lkabui/checkpoint4.git
+            git clone git@github.com:centia28/bc-19-maintenance_tracker.git
     * Using HTTP;
 
             https://github.com/centia28/bc-19-maintenance_tracker.git
