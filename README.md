@@ -38,10 +38,10 @@ This app's functionality depends on multiple `NodeJS` packages  and `Firebase` d
             git clone git@github.com:andela-lkabui/checkpoint4.git
     * Using HTTP;
 
-            https://github.com/andela-lkabui/checkpoint4.git
+            https://github.com/centia28/bc-19-maintenance_tracker.git
 3. Navigate to the repo's folder on your computer
 
-        cd checkpoint4/
+        cd bc-19-maintenance_tracker/
 4. Run the app. It installs the app's backend dependencies.
         
         npm install
