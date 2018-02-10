@@ -28,7 +28,7 @@ This app's functionality depends on multiple `NodeJS` packages  and `Firebase` d
 * Angular - An Angular component that provides read/write access to a browser's cookies.
 * ng-file-upload - This library is an angular component that enables file (images in this case) upload and also features a service that enables posting of these uploads to the back end.
 
-##Installation and setup
+## Installation and setup
 
 1. Navigate to a directory of choice on terminal.
 2. Clone this repository on that directory.
